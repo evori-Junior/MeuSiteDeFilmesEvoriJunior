@@ -29,8 +29,12 @@
       margin: 0;
     }
 
+    nav {
+      display: flex;
+      gap: 20px;
+    }
+
     nav a {
-      margin: 0 15px;
       color: #fff;
       text-decoration: none;
       font-weight: bold;
@@ -142,12 +146,12 @@
     .cast {
       display: flex;
       flex-wrap: wrap;
-      gap: 15px;
+      gap: 20px;
     }
 
     .cast-member {
       text-align: center;
-      width: 120px;
+      width: 140px;
     }
 
     .cast-member img {
@@ -155,6 +159,37 @@
       height: 100px;
       border-radius: 50%;
       object-fit: cover;
+    }
+
+    .character {
+      margin-top: 5px;
+      font-size: 0.9em;
+      color: #aaa;
+    }
+
+    /* Login Modal */
+    .login-form input {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 5px;
+    }
+
+    .login-form button {
+      background: #e50914;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 100%;
+      font-size: 1em;
+    }
+
+    .login-form button:hover {
+      background: #b20710;
     }
   </style>
 </head>
@@ -165,7 +200,7 @@
       <a onclick="scrollToSection('home')">Home</a>
       <a onclick="scrollToSection('movies')">Filmes</a>
       <a onclick="scrollToSection('series')">Séries</a>
-      <a href="#">Login</a>
+      <a onclick="openLogin()">Login</a>
     </nav>
   </header>
 
@@ -188,11 +223,25 @@
     <div class="movies-grid" id="series-grid"></div>
   </section>
 
-  <!-- Modal -->
+  <!-- Modal Geral -->
   <div id="modal" class="modal">
     <div class="modal-content">
       <span class="close" onclick="closeModal()">&times;</span>
       <div id="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Modal Login -->
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeLogin()">&times;</span>
+      <h2>Login</h2>
+      <form class="login-form">
+        <input type="email" placeholder="Email" required>
+        <input type="password" placeholder="Senha" required>
+        <input type="password" placeholder="Confirmar Senha" required>
+        <button type="submit">Entrar</button>
+      </form>
     </div>
   </div>
 
@@ -205,9 +254,8 @@
           trailer: "https://www.youtube.com/embed/uYPbbksJxIg",
           poster: "https://image.tmdb.org/t/p/w500/ptpr0kGAckfQkJeJIt8st5dglvd.jpg",
           cast: [
-            { name: "Cillian Murphy", photo: "https://image.tmdb.org/t/p/w200/4CrjckJxF5t8SDrOh6xCkNJqz9p.jpg" },
-            { name: "Emily Blunt", photo: "https://image.tmdb.org/t/p/w200/n8N2W8dC1KEkSBcW0vZMs1J5rxQ.jpg" },
-            { name: "Robert Downey Jr.", photo: "https://image.tmdb.org/t/p/w200/5qHNjhtjMD4YWH3UP0rm4tKwxCL.jpg" }
+            { name: "Cillian Murphy", character: "J. Robert Oppenheimer", photo: "https://image.tmdb.org/t/p/w200/4CrjckJxF5t8SDrOh6xCkNJqz9p.jpg", charPhoto: "https://image.tmdb.org/t/p/w200/mXLOHHc1Zeuwsl4xYKjKh2280oL.jpg" },
+            { name: "Emily Blunt", character: "Kitty Oppenheimer", photo: "https://image.tmdb.org/t/p/w200/n8N2W8dC1KEkSBcW0vZMs1J5rxQ.jpg", charPhoto: "https://image.tmdb.org/t/p/w200/gAyDkG6jQ7pmbj3l3fLtkj5snQj.jpg" }
           ]
         },
         batman: {
@@ -216,8 +264,7 @@
           trailer: "https://www.youtube.com/embed/mqqft2x_Aa4",
           poster: "https://image.tmdb.org/t/p/w500/74xTEgt7R36Fpooo50r9T25onhq.jpg",
           cast: [
-            { name: "Robert Pattinson", photo: "https://image.tmdb.org/t/p/w200/bRdGYWS2r5yH1cfCR1l88O2pXyS.jpg" },
-            { name: "Zoë Kravitz", photo: "https://image.tmdb.org/t/p/w200/8nxXcMG8zF53X9a2SLCey2Qx1wK.jpg" }
+            { name: "Robert Pattinson", character: "Bruce Wayne / Batman", photo: "https://image.tmdb.org/t/p/w200/bRdGYWS2r5yH1cfCR1l88O2pXyS.jpg", charPhoto: "https://image.tmdb.org/t/p/w200/kfZqwGuvEBAysAbCsa0QLKoSYR.jpg" }
           ]
         },
         joker: {
@@ -226,7 +273,7 @@
           trailer: "https://www.youtube.com/embed/zAGVQLHvwOY",
           poster: "https://image.tmdb.org/t/p/w500/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg",
           cast: [
-            { name: "Joaquin Phoenix", photo: "https://image.tmdb.org/t/p/w200/nXMzvVF6xR3OXOedozfOcoA20xr.jpg" }
+            { name: "Joaquin Phoenix", character: "Arthur Fleck / Joker", photo: "https://image.tmdb.org/t/p/w200/nXMzvVF6xR3OXOedozfOcoA20xr.jpg", charPhoto: "https://image.tmdb.org/t/p/w200/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg" }
           ]
         },
         inception: {
@@ -235,8 +282,7 @@
           trailer: "https://www.youtube.com/embed/YoHD9XEInc0",
           poster: "https://image.tmdb.org/t/p/w500/edv5CZvWj09upOsy2Y6IwDhK8bt.jpg",
           cast: [
-            { name: "Leonardo DiCaprio", photo: "https://image.tmdb.org/t/p/w200/A85WIRIKVsD2DeUSc8wQ4fOKc4e.jpg" },
-            { name: "Tom Hardy", photo: "https://image.tmdb.org/t/p/w200/4CRu2kRF1rPjRcd0WojT1lwJrCV.jpg" }
+            { name: "Leonardo DiCaprio", character: "Dom Cobb", photo: "https://image.tmdb.org/t/p/w200/A85WIRIKVsD2DeUSc8wQ4fOKc4e.jpg", charPhoto: "https://image.tmdb.org/t/p/w200/kqjL17yufvn9OVLyXYpvtyrFfak.jpg" }
           ]
         },
         avengers: {
@@ -245,8 +291,7 @@
           trailer: "https://www.youtube.com/embed/TcMBFSGVi1c",
           poster: "https://image.tmdb.org/t/p/w500/ulzhLuWrPK07P1YkdWQLZnQh1JL.jpg",
           cast: [
-            { name: "Chris Evans", photo: "https://image.tmdb.org/t/p/w200/3bOGNsHlrswhyW79uvIHH1V43JI.jpg" },
-            { name: "Scarlett Johansson", photo: "https://image.tmdb.org/t/p/w200/6NsMbJXRlDZuDzatN2akFdGuTvx.jpg" }
+            { name: "Chris Evans", character: "Capitão América", photo: "https://image.tmdb.org/t/p/w200/3bOGNsHlrswhyW79uvIHH1V43JI.jpg", charPhoto: "https://image.tmdb.org/t/p/w200/8vHJXcY7mTbn0lQ2PQ5Moe4n58f.jpg" }
           ]
         }
       },
@@ -257,18 +302,16 @@
           trailer: "https://www.youtube.com/embed/oVzVdvGIC7U",
           poster: "https://image.tmdb.org/t/p/w500/bGZn5RVzMMXju4ev7xbl1aLdXqq.jpg",
           cast: [
-            { name: "Cillian Murphy", photo: "https://image.tmdb.org/t/p/w200/4CrjckJxF5t8SDrOh6xCkNJqz9p.jpg" },
-            { name: "Tom Hardy", photo: "https://image.tmdb.org/t/p/w200/4CRu2kRF1rPjRcd0WojT1lwJrCV.jpg" }
+            { name: "Cillian Murphy", character: "Thomas Shelby", photo: "https://image.tmdb.org/t/p/w200/4CrjckJxF5t8SDrOh6xCkNJqz9p.jpg", charPhoto: "https://image.tmdb.org/t/p/w200/2IQ5L8IsP1yqZ2U9A2zLomqKgJo.jpg" }
           ]
         },
-        rickmorty: {
-          title: "Rick and Morty",
-          description: "As aventuras interdimensionais do cientista maluco Rick e seu neto Morty.",
-          trailer: "https://www.youtube.com/embed/BmGejOqQY7w",
-          poster: "https://image.tmdb.org/t/p/w500/8kOWDBK6XlPUzckuHDo3wwVRFwt.jpg",
+        breakingbad: {
+          title: "Breaking Bad",
+          description: "Um professor de química do ensino médio vira produtor de metanfetamina ao descobrir que tem câncer.",
+          trailer: "https://www.youtube.com/embed/HhesaQXLuRY",
+          poster: "https://image.tmdb.org/t/p/w500/ggFHVNu6YYI5L9pCfOacjizRGt.jpg",
           cast: [
-            { name: "Justin Roiland (voz)", photo: "https://image.tmdb.org/t/p/w200/hU5YjRz2kFVkG4M4dKzbmQn2U0q.jpg" },
-            { name: "Chris Parnell (voz)", photo: "https://image.tmdb.org/t/p/w200/xYYpRoTUbD5SWRaCj6iXzAazC9E.jpg" }
+            { name: "Bryan Cranston", character: "Walter White", photo: "https://image.tmdb.org/t/p/w200/8p2th1nZkyYj7sLZgHjKch0xkyo.jpg", charPhoto: "https://image.tmdb.org/t/p/w200/9faGSFi5jam6pDWGNd0p8JcJgXQ.jpg" }
           ]
         },
         strangerthings: {
@@ -277,8 +320,7 @@
           trailer: "https://www.youtube.com/embed/mnd7sFt5c3A",
           poster: "https://image.tmdb.org/t/p/w500/x2LSRK2Cm7MZhjluni1msVJ3wDF.jpg",
           cast: [
-            { name: "Millie Bobby Brown", photo: "https://image.tmdb.org/t/p/w200/2r0U5F8vxkkTtJdM6lJVRfWLtmO.jpg" },
-            { name: "Finn Wolfhard", photo: "https://image.tmdb.org/t/p/w200/7qEnuqJX8WaGU6CStpU1YUUZlru.jpg" }
+            { name: "Millie Bobby Brown", character: "Eleven", photo: "https://image.tmdb.org/t/p/w200/2r0U5F8vxkkTtJdM6lJVRfWLtmO.jpg", charPhoto: "https://image.tmdb.org/t/p/w200/49WJfeN0moxb9IPfGn8AIqMGskD.jpg" }
           ]
         }
       }
@@ -318,6 +360,8 @@
             <div class="cast-member">
               <img src="${actor.photo}" alt="${actor.name}">
               <p>${actor.name}</p>
+              <div class="character">${actor.character}</div>
+              <img src="${actor.charPhoto}" alt="${actor.character}">
             </div>`).join("")}
         </div>
       `;
@@ -333,8 +377,17 @@
       document.getElementById(id).scrollIntoView({ behavior: "smooth" });
     }
 
+    function openLogin() {
+      document.getElementById("loginModal").style.display = "flex";
+    }
+
+    function closeLogin() {
+      document.getElementById("loginModal").style.display = "none";
+    }
+
     renderContent();
   </script>
 </body>
 </html>
+
 
