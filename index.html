@@ -1,11 +1,206 @@
 <!DOCTYPE html>
-<html lang=pt-br">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MoviesTv</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MoviesTv</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #141414;
+      color: #fff;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 50px;
+      background-color: rgba(0, 0, 0, 0.8);
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+    }
+
+    header h1 {
+      color: #e50914;
+      margin: 0;
+    }
+
+    .banner {
+      height: 80vh;
+      background: url("https://image.tmdb.org/t/p/original/9ZlGiEkE8kXnhj3zPJfcC6vE5qp.jpg") no-repeat center center/cover;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 60px;
+      color: #fff;
+    }
+
+    .banner h2 {
+      font-size: 3em;
+      margin-bottom: 20px;
+    }
+
+    .banner p {
+      font-size: 1.2em;
+      max-width: 600px;
+      margin-bottom: 20px;
+    }
+
+    .banner button {
+      padding: 10px 20px;
+      font-size: 1em;
+      background-color: #e50914;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .movies-section {
+      padding: 20px 50px;
+    }
+
+    .movies-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 15px;
+    }
+
+    .movie {
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+
+    .movie:hover {
+      transform: scale(1.05);
+    }
+
+    .movie img {
+      width: 100%;
+      border-radius: 8px;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.9);
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      z-index: 2000;
+    }
+
+    .modal-content {
+      background: #222;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 800px;
+      width: 100%;
+    }
+
+    .modal-content h2 {
+      margin-top: 0;
+    }
+
+    .modal iframe {
+      width: 100%;
+      height: 400px;
+      border: none;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+
+    .close {
+      float: right;
+      font-size: 1.5em;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-    <h1>MoviesTv - Seu catálogo de filmes aqui</h1>
+  <header>
+    <h1>MoviesTv</h1>
+  </header>
+
+  <!-- Banner -->
+  <div class="banner">
+    <h2>Oppenheimer</h2>
+    <p>Durante a Segunda Guerra Mundial, o cientista J. Robert Oppenheimer trabalha no Projeto Manhattan, levando à criação da bomba atômica.</p>
+    <button onclick="openModal('oppenheimer')">▶ Assistir Trailer</button>
+  </div>
+
+  <!-- Filmes -->
+  <section class="movies-section">
+    <h2>Filmes em destaque</h2>
+    <div class="movies-grid">
+      <div class="movie" onclick="openModal('oppenheimer')">
+        <img src="https://image.tmdb.org/t/p/w500/ptpr0kGAckfQkJeJIt8st5dglvd.jpg" alt="Oppenheimer">
+      </div>
+      <div class="movie" onclick="openModal('batman')">
+        <img src="https://image.tmdb.org/t/p/w500/74xTEgt7R36Fpooo50r9T25onhq.jpg" alt="The Batman">
+      </div>
+      <div class="movie" onclick="openModal('joker')">
+        <img src="https://image.tmdb.org/t/p/w500/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg" alt="Joker">
+      </div>
+    </div>
+  </section>
+
+  <!-- Modal -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+
+  <script>
+    const movies = {
+      oppenheimer: {
+        title: "Oppenheimer",
+        description: "Durante a Segunda Guerra Mundial, o cientista J. Robert Oppenheimer trabalha no Projeto Manhattan, levando à criação da bomba atômica.",
+        trailer: "https://www.youtube.com/embed/uYPbbksJxIg",
+        cast: ["Cillian Murphy", "Emily Blunt", "Robert Downey Jr.", "Matt Damon"]
+      },
+      batman: {
+        title: "The Batman",
+        description: "Batman investiga a corrupção em Gotham e enfrenta o serial killer Charada.",
+        trailer: "https://www.youtube.com/embed/mqqft2x_Aa4",
+        cast: ["Robert Pattinson", "Zoë Kravitz", "Paul Dano", "Jeffrey Wright"]
+      },
+      joker: {
+        title: "Joker",
+        description: "Arthur Fleck, um comediante falido, enlouquece e se transforma no perigoso Coringa.",
+        trailer: "https://www.youtube.com/embed/zAGVQLHvwOY",
+        cast: ["Joaquin Phoenix", "Robert De Niro", "Zazie Beetz"]
+      }
+    };
+
+    function openModal(movieKey) {
+      const movie = movies[movieKey];
+      const modalBody = document.getElementById("modal-body");
+      modalBody.innerHTML = `
+        <h2>${movie.title}</h2>
+        <p>${movie.description}</p>
+        <iframe src="${movie.trailer}" allowfullscreen></iframe>
+        <h3>Elenco</h3>
+        <ul>${movie.cast.map(actor => `<li>${actor}</li>`).join("")}</ul>
+      `;
+      document.getElementById("modal").style.display = "flex";
+    }
+
+    function closeModal() {
+      document.getElementById("modal").style.display = "none";
+      document.getElementById("modal-body").innerHTML = "";
+    }
+  </script>
 </body>
 </html>
